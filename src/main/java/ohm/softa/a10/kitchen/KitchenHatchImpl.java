@@ -24,14 +24,16 @@ public class KitchenHatchImpl implements KitchenHatch {
 
 	@Override
 	public Order dequeueOrder(long timeout) {
-		while (orders.size() == 0) {
-			try {
-				wait(timeout);
-			} catch (InterruptedException e) {
-				throw new RuntimeException(e);
+		synchronized (orders) {
+			while (orders.size() == 0) {
+				try {
+					wait(timeout);
+				} catch (InterruptedException e) {
+					throw new RuntimeException(e);
+				}
 			}
+			return orders.poll();
 		}
-		return orders.poll();
 	}
 
 	@Override
@@ -41,23 +43,27 @@ public class KitchenHatchImpl implements KitchenHatch {
 
 	@Override
 	public Dish dequeueDish(long timeout) {
-		while (dishes.size() == 0) {
-			try {
-				wait(timeout);
-			} catch (InterruptedException e) {
-				throw new RuntimeException(e);
+		synchronized (dishes) {
+			while (dishes.size() == 0) {
+				try {
+					wait(timeout);
+				} catch (InterruptedException e) {
+					throw new RuntimeException(e);
+				}
 			}
+			return dishes.poll();
 		}
-		return dishes.poll();
 	}
 
 	@Override
 	public void enqueueDish(Dish m) {
-		while (dishes.size() >= maxMeals) {
-			try {
-				wait(10_000);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
+		synchronized (dishes) {
+			while (dishes.size() >= maxMeals) {
+				try {
+					wait(10_000);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
 			}
 		}
 	}
