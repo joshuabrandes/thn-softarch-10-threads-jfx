@@ -13,6 +13,12 @@ public class Waiter implements Runnable {
 
 	private Random random = new Random();
 
+	public Waiter(String name, KitchenHatch kitchenHatch, ProgressReporter progressReporter) {
+		this.name = name;
+		this.kitchenHatch = kitchenHatch;
+		this.progressReporter = progressReporter;
+	}
+
 	@Override
 	public void run() {
 		while (kitchenHatch.getDishesCount() > 0) {
