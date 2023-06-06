@@ -74,6 +74,6 @@ public class MainController implements Initializable {
 			personnel.add(new Waiter(nameGenerator.generateName(), kitchenHatch, progressReporter));
 		}
 
-		personnel.forEach(Runnable::run);
+		personnel.forEach(r -> new Thread(r).start());
 	}
 }
